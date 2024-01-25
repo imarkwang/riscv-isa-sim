@@ -22,6 +22,10 @@
 #include <sstream>
 #include "../VERSION"
 
+void decodeHook(void*, uint64_t, uint64_t) {}
+bool commitHook(){ return false; }
+void excptionHook(){}
+
 static void help(int exit_code = 1)
 {
   fprintf(stderr, "Spike RISC-V ISA Simulator " SPIKE_VERSION "\n\n");

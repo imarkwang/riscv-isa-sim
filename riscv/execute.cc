@@ -6,6 +6,7 @@
 #include "disasm.h"
 #include "decode_macros.h"
 #include <cassert>
+#include "spikeAdpterHooks.hpp"
 
 static void commit_log_reset(processor_t* p)
 {
@@ -62,6 +63,8 @@ static void commit_log_print_value(FILE *log_file, int width, uint64_t val)
 
 static void commit_log_print_insn(processor_t *p, reg_t pc, insn_t insn)
 {
+  if (commitHook())
+    return;
   FILE *log_file = p->get_log_file();
 
   auto& reg = p->get_state()->log_reg_write;
@@ -173,6 +176,7 @@ static inline reg_t execute_insn_logged(processor_t* p, reg_t pc, insn_fetch_t f
 
   try {
     npc = fetch.func(p, fetch.insn, pc);
+    decodeHook(&fetch, pc, npc);
     if (npc != PC_SERIALIZE_BEFORE) {
       if (p->get_log_commits_enabled()) {
         commit_log_print_insn(p, pc, fetch.insn);
