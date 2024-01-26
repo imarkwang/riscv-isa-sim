@@ -2,10 +2,17 @@
 rm -rf build
 mkdir build
 cd build
-../configure --prefix=/work/home/mark/workspace/source/riscv-sw/riscv-bin/
+../configure --prefix=$(pwd)/../libs
 make -j32
 make install
-cp /work/home/mark/workspace/source/riscv-sw/riscv-bin/include /work/home/mark/workspace/source/Genshin_model/src/utils/spikeInterface/lib/ -r
-cp lib*.a /work/home/mark/workspace/source/Genshin_model/src/utils/spikeInterface/lib/
 
+cp libriscv.a ../libs/lib
+cp libfdt.a ../libs/lib
+cp libfesvr.a ../libs/lib
+cp libdisasm.a ../libs/lib
+cp libsoftfloat.a ../libs/lib
+
+
+rm -rf ../libs/lib/libriscv.so
+rm -rf ../libs/lib/libsoftfloat.so
 
