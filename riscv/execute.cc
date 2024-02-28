@@ -288,6 +288,7 @@ void processor_t::step(size_t n)
             disasm(fetch.insn);
           pc = execute_insn_logged(this, pc, fetch);
           advance_pc();
+          state.pc = getNpcHook(pc);
         }
       }
       else while (instret < n)
