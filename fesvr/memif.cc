@@ -43,8 +43,8 @@ void memif_t::read(addr_t addr, size_t len, void* bytes)
 void memif_t::write(addr_t addr, size_t len, const void* bytes)
 {
   /* usr definition */
-  uint64_t val = *reinterpret_cast<const uint64_t*>(bytes);
-  catchDataBeforeWriteHook(addr, val, len);
+//  uint64_t val = *reinterpret_cast<const uint64_t*>(bytes);
+//  catchDataBeforeWriteHook(addr, val, len);
   /* usr definition */
   size_t align = cmemif->chunk_align();
   if (len && (addr & (align-1)))

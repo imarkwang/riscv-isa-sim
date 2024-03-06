@@ -1015,6 +1015,7 @@ int processor_t::paddr_bits()
 void processor_t::put_csr(int which, reg_t val)
 {
   val = zext_xlen(val);
+  getCsrHook(which, val);
   auto search = state.csrmap.find(which);
   if (search != state.csrmap.end()) {
     search->second->write(val);

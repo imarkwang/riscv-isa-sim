@@ -14,6 +14,7 @@
 #include "cfg.h"
 #include <stdlib.h>
 #include <vector>
+#include "spikeAdpterHooks.hpp"
 
 // virtual memory configuration
 #define PGSHIFT 12
@@ -151,6 +152,7 @@ public:
 
     if (unlikely(proc && proc->get_log_commits_enabled()))
       proc->state.log_mem_write.push_back(std::make_tuple(addr, val, sizeof(T)));
+      catchDataBeforeWriteHook(addr, val, sizeof(T));
   }
 
   template<typename T>
