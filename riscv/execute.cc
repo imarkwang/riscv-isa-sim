@@ -311,7 +311,10 @@ void processor_t::step(size_t n)
     }
     catch(trap_t& t)
     {
-      take_trap(t, pc);
+      insn_fetch_t fetch = mmu->load_insn(pc);
+      if (!excptionHook(&fetch, pc)) {
+        take_trap(t, pc);
+      }
       n = instret;
 
       // Trigger action takes priority over single step

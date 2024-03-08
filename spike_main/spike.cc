@@ -25,7 +25,7 @@
 void decodeHook(void*, uint64_t, uint64_t) {}
 bool commitHook(){ return false; }
 uint64_t getNpcHook(uint64_t npc) {return npc;}
-void excptionHook(){}
+reg_t excptionHook(void*, uint64_t){ return 0; }
 void catchDataBeforeWriteHook(uint64_t, uint64_t , uint32_t ){}
 void getCsrHook(int, reg_t) {}
 
