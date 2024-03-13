@@ -139,6 +139,9 @@ public:
 
   template<typename T>
   void ALWAYS_INLINE store(reg_t addr, T val, xlate_flags_t xlate_flags = {false, false, false}) {
+    if (unlikely(proc && proc->get_log_commits_enabled()))
+      catchDataBeforeWriteHook(addr, val, sizeof(T));
+
     reg_t vpn = addr >> PGSHIFT;
     bool aligned = (addr & (sizeof(T) - 1)) == 0;
     bool tlb_hit = tlb_store_tag[vpn % TLB_ENTRIES] == vpn;
@@ -152,7 +155,6 @@ public:
 
     if (unlikely(proc && proc->get_log_commits_enabled()))
       proc->state.log_mem_write.push_back(std::make_tuple(addr, val, sizeof(T)));
-      catchDataBeforeWriteHook(addr, val, sizeof(T));
   }
 
   template<typename T>
