@@ -27,7 +27,7 @@ bool commitHook(){ return false; }
 uint64_t getNpcHook(uint64_t npc) {return npc;}
 reg_t excptionHook(void*, uint64_t){ return 0; }
 void catchDataBeforeWriteHook(uint64_t, uint64_t , uint32_t ){}
-void getCsrHook(int, reg_t) {}
+bool getCsrHook(int, reg_t) { return true; }
 
 static void help(int exit_code = 1)
 {

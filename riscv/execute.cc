@@ -63,8 +63,11 @@ static void commit_log_print_value(FILE *log_file, int width, uint64_t val)
 
 static void commit_log_print_insn(processor_t *p, reg_t pc, insn_t insn)
 {
-  if (commitHook())
-    return;
+    if (p->get_log_commits_enabled()) {
+        if (commitHook())
+            return;
+    }
+
   FILE *log_file = p->get_log_file();
 
   auto& reg = p->get_state()->log_reg_write;
@@ -176,7 +179,11 @@ static inline reg_t execute_insn_logged(processor_t* p, reg_t pc, insn_fetch_t f
 
   try {
     npc = fetch.func(p, fetch.insn, pc);
-    decodeHook(&fetch, pc, npc);
+    if (p != nullptr) {
+        if (p->get_log_commits_enabled()) {
+            decodeHook(&fetch, pc, npc);
+        }
+    }
     if (npc != PC_SERIALIZE_BEFORE) {
       if (p->get_log_commits_enabled()) {
         commit_log_print_insn(p, pc, fetch.insn);
@@ -288,7 +295,9 @@ void processor_t::step(size_t n)
             disasm(fetch.insn);
           pc = execute_insn_logged(this, pc, fetch);
           advance_pc();
-          state.pc = getNpcHook(pc);
+          if (get_log_commits_enabled()) {
+              state.pc = getNpcHook(pc);
+          }
         }
       }
       else while (instret < n)
@@ -312,7 +321,11 @@ void processor_t::step(size_t n)
     catch(trap_t& t)
     {
       insn_fetch_t fetch = mmu->load_insn(pc);
-      if (!excptionHook(&fetch, pc)) {
+      bool csr_trap_enable = false;
+      if (get_log_commits_enabled()) {
+          csr_trap_enable = excptionHook(&fetch, pc);
+      }
+      if (!csr_trap_enable) {
         take_trap(t, pc);
       }
       n = instret;

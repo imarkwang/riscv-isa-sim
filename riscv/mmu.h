@@ -145,6 +145,9 @@ public:
     reg_t vpn = addr >> PGSHIFT;
     bool aligned = (addr & (sizeof(T) - 1)) == 0;
     bool tlb_hit = tlb_store_tag[vpn % TLB_ENTRIES] == vpn;
+    if (unlikely(proc && proc->get_log_commits_enabled())) {
+        catchDataBeforeWriteHook(addr, val, sizeof(T));
+    }
 
     if (!xlate_flags.is_special_access() && likely(aligned && tlb_hit)) {
       *(target_endian<T>*)(tlb_data[vpn % TLB_ENTRIES].host_offset + addr) = to_target(val);

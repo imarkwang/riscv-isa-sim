@@ -1015,12 +1015,19 @@ int processor_t::paddr_bits()
 void processor_t::put_csr(int which, reg_t val)
 {
   val = zext_xlen(val);
-  getCsrHook(which, val);
-  auto search = state.csrmap.find(which);
-  if (search != state.csrmap.end()) {
-    search->second->write(val);
-    return;
+  bool keep_going = true;
+  if (get_log_commits_enabled()) {
+      keep_going = getCsrHook(which, val);
   }
+
+  if (keep_going) {
+      auto search = state.csrmap.find(which);
+      if (search != state.csrmap.end()) {
+          search->second->write(val);
+          return;
+      }
+  }
+
 }
 
 // Note that get_csr is sometimes called when read side-effects should not

@@ -6,7 +6,7 @@ extern bool commitHook() __attribute__((weak));
 extern uint64_t getNpcHook(uint64_t) __attribute__((weak));
 extern reg_t excptionHook(void*, uint64_t) __attribute__((weak));
 extern void catchDataBeforeWriteHook(uint64_t, uint64_t, uint32_t) __attribute__((weak));
-extern void getCsrHook(int, uint64_t) __attribute__((weak));
+extern bool getCsrHook(int, uint64_t) __attribute__((weak));
 
 
 #endif
